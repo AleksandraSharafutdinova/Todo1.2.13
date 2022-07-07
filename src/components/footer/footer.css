@@ -61,7 +61,11 @@
     cursor: pointer;
 }
 
-.filters li:hover button {
+/*.filters li:hover button {*/
+/*    border-color: rgba(175, 47, 47, 0.1);*/
+/*}*/
+
+.trying:hover {
     border-color: rgba(175, 47, 47, 0.1);
 }
 
