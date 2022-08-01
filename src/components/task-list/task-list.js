@@ -12,13 +12,13 @@ const TaskList = ({todos, onDeleted, onToggleCompleted, onEditing, onEdit }) => 
         const {id, ...itemProps} = item;
 
         return (
-                <span key={id}>
+                <li key={id}>
                     <Task {...itemProps}
                     onDeleted={ () => onDeleted(id)}
                     onToggleCompleted={() => onToggleCompleted(id)}
                     onEditing={() => onEditing(id)}
                     onEdit={(e) => onEdit(e, id)}/>
-                </span>
+                </li>
             )
         });
 

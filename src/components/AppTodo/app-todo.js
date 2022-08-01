@@ -14,22 +14,23 @@ export default class AppTodo extends Component {
 
     state = {
         todoDate: [
-            this.createTodoItem('Купить банан'),
-            this.createTodoItem('Купить яблоко'),
-            this.createTodoItem('Покушать')
+            this.createTodoItem('Сова', 0, 15),
+            this.createTodoItem('Енот', 0, 15),
+            this.createTodoItem('Кошка', 0, 15)
         ],
         term: '',
         filter: 'all',
-
     };
 
-    createTodoItem(label) {
+    createTodoItem(label, minValue, secValue) {
         return {
             label,
+            minValue,
+            secValue,
             completed: false,
             time: `created ${formatDistanceToNow(new Date(), { addSuffix: true })}`,
             id: this.maxId++,
-            editing: false
+            editing: false,
         }
     };
 
@@ -46,11 +47,11 @@ export default class AppTodo extends Component {
         });
     };
 
-    addItem = (text) => {
+    addItem = (text, minValue, secValue) => {
         if (text.length === 0) {
             return
         }
-        const newItem = this.createTodoItem(text);
+        const newItem = this.createTodoItem(text, minValue, secValue);
 
         this.setState(({todoDate}) => {
             const newArr = [

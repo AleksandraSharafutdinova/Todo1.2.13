@@ -53,9 +53,10 @@
 
 .todo-list form.editing .edit {
     display: block;
-    width: calc(100% - 43px);
+    width: calc(100% - 80px);
     padding: 12px 16px;
     margin: 0 0 0 43px;
+    font-size: 24px;
 }
 
 .todo-list form.editing .view {
@@ -102,8 +103,12 @@
     padding: 15px 85px 15px 60px;
 }
 
-.todo-list form label .created {
-    font-size: 13px;
+.todo-list form .view {
+    position: relative;
+}
+
+.todo-list form label .time {
+    font-size: 15px;
     color: gray;
 }
 
@@ -121,38 +126,66 @@
     text-decoration: line-through;
 }
 
-.todo-list form .icon {
-    position: absolute;
-    top: 0;
-    bottom: -3px;
+.todo-list form .icon{
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*bottom: -3px;*/
     width: 30px;
     height: 40px;
     font-size: 34px;
     color: #cc9a9a;
-    margin: auto 0 11px;
+    /*margin: auto 0 11px;*/
+    margin: auto 0;
     transition: color 0.2s ease-out;
     cursor: pointer;
 }
 
-.todo-list form .icon:hover {
+.todo-list form .icon:hover{
     color: #af5b5e;
 }
 
-.todo-list form .icon-destroy {
+.todo-list form .icon-destroy{
     right: 10px;
+
+    position: absolute;
+    top: 0;
+    bottom: -3px;
 }
 
-.todo-list form .icon-destroy:after {
+.todo-list form .icon-destroy:after{
     content: '×';
 }
 
 .todo-list form .icon-edit {
     font-size: 19px;
     right: 45px;
+
+    position: absolute;
+    top: 0;
+    bottom: -3px;
 }
 
 .todo-list form .icon-edit:after {
     content: '✎';
+}
+
+.todo-list form .icon-pause,
+.todo-list form .icon-play {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.todo-list form .icon-play {
+    font-size: 15px;
+}
+
+.icon-pause:after {
+    content: '⏸';
+}
+
+.icon-play:after {
+    content: '▶';
 }
 
 .todo-list form .edit {
@@ -161,4 +194,22 @@
 
 .todo-list form.editing:last-child {
     margin-bottom: -1px;
+}
+
+.times {
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.exclamation {
+    font-size: 35px;
+    color: red;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.created {
+    position: absolute;
+    margin-left: 150px;
+    margin-top: -42px;
 }

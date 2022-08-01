@@ -15,31 +15,56 @@ export default class NewTaskForm extends Component {
     };
 
     state = {
-        label: ''
+        label: '',
+        minValue: '',
+        secValue: ''
     };
 
     onLabelChange = (e) => {
         this.setState({
-            label: e.target.value
+            [e.target.name]: e.target.value,
         })
     };
 
     onSubmit = (e) => {
-        e.preventDefault();
-        this.props.onItemAdded(this.state.label.charAt(0).toUpperCase() + this.state.label.slice(1));
-        this.setState({
-            label: ''
-        })
+        if (e.key === 'Enter') {
+            if (this.state.label === '') {
+               this.props.onItemAdded('Задача', this.state.minValue, this.state.secValue)
+            } else {
+                this.props.onItemAdded(this.state.label.charAt(0).toUpperCase() + this.state.label.slice(1), this.state.minValue, this.state.secValue)
+            }
+            this.setState({
+                label: '',
+                minValue: '',
+                secValue: ''
+            })
+        }
     };
 
     render() {
+        const {label, minValue, secValue} = this.state;
         return (
-            <form onSubmit={this.onSubmit}>
+            <form onKeyPress={this.onSubmit} className='new-todo-form'>
                 <input type='text'
                        className='new-todo'
                        placeholder="What needs to be done?" autoFocus
                        onChange={this.onLabelChange}
-                       value={this.state.label}
+                       value={label}
+                       name='label'
+                />
+                <input className="new-todo-form__timer"
+                       autoFocus
+                       name='minValue'
+                       placeholder="Min"
+                       value={minValue}
+                       onChange={this.onLabelChange}
+
+                />
+                <input className="new-todo-form__timer"
+                       placeholder="Sec"
+                       name='secValue'
+                       onChange={this.onLabelChange}
+                       value={secValue}
                 />
             </form>
         );
