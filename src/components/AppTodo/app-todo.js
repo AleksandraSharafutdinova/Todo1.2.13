@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import { formatDistanceToNow } from 'date-fns';
 
 import Header from "../header/header";
@@ -8,63 +8,40 @@ import Footer from "../footer";
 
 import './app-todo.css'
 
-export default class AppTodo extends Component {
+const AppTodo = () => {
 
-    maxId = 100;
+    let maxId = 100;
 
-    state = {
-        todoDate: [
-            this.createTodoItem('Сова', 0, 15),
-            this.createTodoItem('Енот', 0, 15),
-            this.createTodoItem('Кошка', 0, 15)
-        ],
-        term: '',
-        filter: 'all',
-    };
-
-    createTodoItem(label, minValue, secValue) {
+    const createTodoItem = (label, min, sec) => {
         return {
             label,
-            minValue,
-            secValue,
+            timerMin: min || '1',
+            timerSec: sec || '30',
             completed: false,
             time: `created ${formatDistanceToNow(new Date(), { addSuffix: true })}`,
-            id: this.maxId++,
+            id: maxId++,
             editing: false,
         }
     };
 
-    deleteItem = (id) => {
-        this.setState(({todoDate}) => {
-            const idx = todoDate.findIndex((el) => el.id === id);
-            const newArray = [
-                ...todoDate.slice(0, idx),
-                ...todoDate.slice(idx + 1)
-            ]
-            return {
-                todoDate: newArray
-            }
-        });
+    const [todoData, setTodoData] = useState([createTodoItem('Сова'), createTodoItem('Енот'), createTodoItem('Кошка')]);
+    const [filter, setFilter] = useState('All');
+
+    const deleteItem = (id) => {
+        const idx = todoData.findIndex((el) => el.id === id);
+        const newArray = [
+            ...todoData.slice(0, idx),
+            ...todoData.slice(idx + 1)
+        ]
+        setTodoData(newArray);
+    }
+
+    const addItem = (text, min, sec) => {
+        const newItem = createTodoItem(text, min, sec);
+        setTodoData(todoData.concat(newItem));
     };
 
-    addItem = (text, minValue, secValue) => {
-        if (text.length === 0) {
-            return
-        }
-        const newItem = this.createTodoItem(text, minValue, secValue);
-
-        this.setState(({todoDate}) => {
-            const newArr = [
-                ...todoDate,
-                newItem
-            ];
-            return {
-                todoDate: newArr
-            }
-        })
-    };
-
-    toggleProperty(arr, id, propName) {
+    const toggleProperty = (arr, id, propName) => {
         const idx = arr.findIndex((el) => el.id === id);
 
         const oldItem = arr[idx];
@@ -77,115 +54,76 @@ export default class AppTodo extends Component {
         ]
     };
 
-    onToggleCompleted = (id) => {
-        this.setState(({todoDate}) => {
-            return {
-                todoDate: this.toggleProperty(todoDate, id, 'completed')
-            };
-        });
-    };
+    const onToggleCompleted = (id) => {
+        const newArray = toggleProperty(todoData, id, 'completed');
+        setTodoData(newArray);
+    }
 
-    onFilterChange = (filter) => {
-        this.setState({filter});
-    };
-
-    search(items, term) {
-        if (term.length === 0) {
-            return items;
-        }
-        return items.filter((item) => {
-            return item.label.indexOf(term) > -1;
-        });
-    };
-
-    filter (items, filter) {
-        switch(filter) {
+    const getTasksByFilter = () => {
+        switch (filter) {
             case 'all':
-                return items;
+                return todoData;
             case 'active':
-                return items.filter((item) => !item.completed);
+                return todoData.filter((item) => !item.completed);
             case 'completed':
-                return items.filter((item) => item.completed);
+                return todoData.filter((item) => item.completed);
             default:
-                return items;
+                return todoData;
         }
     };
 
-    onClearCompleted = () => {
-        this.setState(({todoDate}) => {
-            const newArray = [
-                ...todoDate.filter((todo) => !todo.completed)
-                    ]
-                    return {
-                        todoDate: newArray
-                    }
-        });
+    const tasks = getTasksByFilter();
+    const onFilterChange = (filter) => {
+        setFilter(filter);
     };
 
-
-    onEditing = (id) => {
-        this.setState(({todoDate}) => {
-            return {
-                todoDate: this.toggleProperty(todoDate, id, 'editing')
-            };
-        });
+    const onClearCompleted = () => {
+        setTodoData(todoData.filter((task) => !task.completed));
     };
 
+    const onEditing = (id) => {
+        const newArr = toggleProperty(todoData, id, 'editing')
+        setTodoData(newArr)
+    }
 
 
-    onEdit = (text, id) => {
+    const onEdit = (text, id) => {
+        const newArray = todoData.map(el => {
+                        if (el.id === id) {
+                            el = {...el, label: text}
+                        }
+                        return el;
+                    });
+        setTodoData(newArray)
+    }
 
-        if (text.length === 0) {
-            this.deleteItem(id)
-        }
+    const completedCount = todoData
+        .filter((el) => el.completed).length;
+    const todoCount = todoData.length - completedCount;
 
-        this.setState(({ todoDate }) => {
-
-            const newArray = todoDate.map(el => {
-                if (el.id === id) {
-                    el = {...el, label: text}
-                }
-                return el;
-            });
-            return {
-                todoDate: newArray
-            }
-        });
-    };
-
-
-    render() {
-
-        const {todoDate, term, filter,} = this.state;
-
-        const visibleItems = this.filter(
-            this.search(todoDate, term), filter);
-
-        const completedCount = todoDate
-                               .filter((el) => el.completed).length;
-        const todoCount = todoDate.length - completedCount;
-
-
-
-        return (
-            <div className='todoapp'>
-                <div className='header'>
-                    <Header />
-                    <NewTaskForm onItemAdded={this.addItem} />
-                </div>
-                <TaskList todos={visibleItems}
-                          onDeleted={this.deleteItem}
-                          onToggleCompleted={this.onToggleCompleted}
-                          onEditing={this.onEditing}
-                          onEdit={this.onEdit}/>
-                <Footer done={todoCount}
-                        filter={filter}
-                        onFilterChange={this.onFilterChange}
-                        onClearCompleted={this.onClearCompleted}
-                        />
+    return (
+        <div className='todoapp'>
+            <div className='header'>
+                <Header />
+                <NewTaskForm onItemAdded={addItem} />
             </div>
-        );
-    };
-};
+            <TaskList
+                      tasks={tasks}
+                      onDeleted={deleteItem}
+                      onToggleCompleted={onToggleCompleted}
+                      onEditing={onEditing}
+                      onEdit={onEdit}
+            />
+            <Footer
+                    done={todoCount}
+                    filter={filter}
+                    onFilterChange={onFilterChange}
+                    onClearCompleted={onClearCompleted}
+            />
+        </div>
+    );
+}
+
+export default AppTodo;
 
 

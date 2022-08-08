@@ -5,9 +5,9 @@ import Task from '../task/task'
 
 import './task-list.css'
 
-const TaskList = ({todos, onDeleted, onToggleCompleted, onEditing, onEdit }) => {
+const TaskList = ({tasks, onDeleted, onToggleCompleted, onEditing, onEdit }) => {
 
-    const elements = todos.map((item) => {
+    const elements = tasks.map((item) => {
 
         const {id, ...itemProps} = item;
 
