@@ -17,7 +17,7 @@ const Task = ({onEdit, time, onDeleted, onToggleCompleted, completed, editing, o
     const onSubmit = (e) => {
         e.preventDefault();
         onEdit(labelTask.charAt(0).toUpperCase() + labelTask.slice(1));
-        setLabel('')
+        setLabel(label)
     };
 
     useEffect(() => {
@@ -34,9 +34,6 @@ const Task = ({onEdit, time, onDeleted, onToggleCompleted, completed, editing, o
     function getPadTime(time) {
         return time.toString().padStart(2, '0')
     }
-
-
-    //const timer = seconds === 0 && minutes === 0 ? <span className='exclamation'>!</span> : null;
 
     let classNames;
     if (completed) {
